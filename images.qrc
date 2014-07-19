@@ -1,3 +1,6 @@
 <RCC>
-    <qresource prefix="/images"/>
+    <qresource prefix="/">
+        <file>images/qt-logo.png</file>
+        <file>images/opencv-logo.png</file>
+    </qresource>
 </RCC>

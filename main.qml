@@ -22,6 +22,7 @@ import QtQuick.Window 2.1
 
 Window {
     id: mainWindow
+    title: 'Squint Arkanoid'
     visible: true
     width: 780
     height: 480
@@ -40,6 +41,38 @@ Window {
         width: parent.width / 13 * 5
         height: parent.height
         anchors.right: parent.right
+        Item {
+            anchors.fill: parent
+            anchors.bottom: camera.top
+            anchors.margins: 10
+            Text {
+                id: credits
+                width: parent.width
+                height: contentHeight
+                text: '«Squint Arkanoid» is an OpenCV demonstration application written\nby Yurij Mikhalevich <0@39.yt>.\nWritten in C++ and JS (used in QML).\nPowered by OpenCV and Qt.'
+                wrapMode: Text.WordWrap
+            }
+            Item {
+                anchors.top: credits.bottom
+                width: parent.width
+                height: parent.height * 2 / 3
+                Image {
+                    source: 'qrc:///images/opencv-logo.png'
+                    width: parent.width / 2 - 30
+                    fillMode: Image.PreserveAspectFit
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                    anchors.margins: 20
+                }
+                Image {
+                    source: 'qrc:///images/qt-logo.png'
+                    width: parent.width / 2 - 10
+                    fillMode: Image.PreserveAspectFit
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                }
+            }
+        }
         Image {
             id: camera
             width: parent.width
