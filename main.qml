@@ -22,7 +22,7 @@ import QtQuick.Window 2.1
 
 Window {
     id: mainWindow
-    title: 'Squint Arkanoid'
+    title: 'Squinting Arkanoid'
     visible: true
     width: 780
     height: 480
@@ -49,7 +49,7 @@ Window {
                 id: credits
                 width: parent.width
                 height: contentHeight
-                text: '«Squint Arkanoid» is an OpenCV demonstration application written\nby Yurij Mikhalevich <0@39.yt>\nin C++ and JS (used in QML).\nPowered by OpenCV and Qt.'
+                text: '«Squinting Arkanoid» is an OpenCV demonstration application written\nby Yurij Mikhalevich <0@39.yt>\nin C++ and JS (used in QML).\nPowered by OpenCV and Qt.'
                 wrapMode: Text.WordWrap
             }
             Item {
