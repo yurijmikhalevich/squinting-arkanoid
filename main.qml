@@ -49,7 +49,7 @@ Window {
                 id: credits
                 width: parent.width
                 height: contentHeight
-                text: '«Squint Arkanoid» is an OpenCV demonstration application written\nby Yurij Mikhalevich <0@39.yt>.\nWritten in C++ and JS (used in QML).\nPowered by OpenCV and Qt.'
+                text: '«Squint Arkanoid» is an OpenCV demonstration application written\nby Yurij Mikhalevich <0@39.yt>\nin C++ and JS (used in QML).\nPowered by OpenCV and Qt.'
                 wrapMode: Text.WordWrap
             }
             Item {
@@ -84,7 +84,7 @@ Window {
         }
     }
     Timer {
-        interval: 1000 / 24
+        interval: 1000 / 16
         repeat: true
         running: true
         triggeredOnStart: true

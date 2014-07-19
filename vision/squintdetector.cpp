@@ -54,7 +54,7 @@ void SquintDetector::updateFrame(cv::Mat frame) {
     rightEyeCascade.detectMultiScale(rightEyeROI, rightEyes, 1.1, 2,
                                      0|CV_HAAR_SCALE_IMAGE, cv::Size(30, 30));
     bool leftEyeFound = (1 == leftEyes.size());
-    bool leftEyeClosed;
+    bool leftEyeClosed = false;
     if (leftEyeFound) {
       leftEyes[0].x += leftEye.x;
       leftEyes[0].y += leftEye.y;
@@ -62,33 +62,29 @@ void SquintDetector::updateFrame(cv::Mat frame) {
       leftEyeClosed = isEyeClosed(frame(leftEye), "left");
     }
     bool rightEyeFound = (1 == rightEyes.size());
-    bool rightEyeClosed;
+    bool rightEyeClosed = false;
     if (rightEyeFound) {
       rightEyes[0].x += rightEye.x;
       rightEyes[0].y += rightEye.y;
       rightEye = rightEyes[0];
-//      rightEyeClosed = isEyeClosed(frame(rightEye), "right");
+      rightEyeClosed = isEyeClosed(frame(rightEye), "right");
     }
 //    qDebug() << "right" << rightEyeFound << rightEyeClosed;
-    qDebug() << "left" << leftEyeFound << leftEyeClosed;
-    if (leftEyeFound || rightEyeFound) {
-      if (leftEyeClosed && rightEyeClosed) {
-        emit bothEyes();
-      } else if (leftEyeClosed) {
-        emit this->leftEye();
-      } else if (rightEyeClosed) {
-        emit this->rightEye();
-      } else {
-        emit noEye();
-      }
+//    qDebug() << "left" << leftEyeFound << leftEyeClosed;
+    if (leftEyeClosed && rightEyeClosed) {
+      emit bothEyes();
+    } else if (leftEyeClosed) {
+      emit this->leftEye();
+    } else if (rightEyeClosed) {
+      emit this->rightEye();
     } else {
       emit noEye();
     }
   }
 }
 
-bool SquintDetector::isEyeClosed(cv::Mat eye,
-                                 QString debugWindowPrefix) {
+
+bool SquintDetector::isEyeClosed(cv::Mat eye, QString debugWindowPrefix) {
   Q_UNUSED(debugWindowPrefix)
   cv::Rect moreExactEyeArea;
   moreExactEyeArea.height = eye.size().height;
@@ -99,30 +95,28 @@ bool SquintDetector::isEyeClosed(cv::Mat eye,
 //  cv::imshow(debugWindowPrefix.append("eye").toStdString(), eye);
   cv::Mat gray;
   cv::cvtColor(~eye, gray, CV_BGR2GRAY);
-  cv::imshow(debugWindowPrefix.append("gray").toStdString(), gray);
+  cv::equalizeHist(gray, gray);
   cv::threshold(gray, gray, 220, 255, cv::THRESH_BINARY);
-  cv::imshow(debugWindowPrefix.append("thresholded").toStdString(), gray);
-  int whitePixels = 0;
-  int columnsWithWhitePixelCount = 0;
-  int columnsCount = gray.size().width;
-  for (int i = 0; i < columnsCount; ++i) {
-    cv::Mat column = gray.col(i);
-    bool currentOwnWhitePixel = false;
-    for (cv::MatIterator_<int> it = column.begin<int>();
-         it != column.end<int>(); ++it) {
-      if (*it > 0) {
-        ++whitePixels;
-        currentOwnWhitePixel = true;
-      }
-    }
-    if (currentOwnWhitePixel) {
-      ++columnsWithWhitePixelCount;
-    }
-  }
-  qDebug() << (double)whitePixels / (double)columnsWithWhitePixelCount;
-  if (((double)whitePixels / (double)columnsWithWhitePixelCount) < 2) {
+  cv::GaussianBlur(gray, gray, cv::Size(5, 5), 2, 2);
+//  cv::imshow(debugWindowPrefix.append("thresholded").toStdString(), gray);
+
+  std::vector<cv::Vec3f> circles;
+  cv::HoughCircles(gray, circles, CV_HOUGH_GRADIENT, 3, 60, 30, 25,
+                   gray.rows / 2.7, gray.rows);
+
+//  for( size_t i = 0; i < circles.size(); i++ )
+//  {
+//      cv::Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
+//      int radius = cvRound(circles[i][2]);
+//      cv::circle(eye, center, radius, cv::Scalar(0, 0, 255), 1);
+//  }
+
+//  cv::imshow(debugWindowPrefix.append("eye").toStdString(), eye);
+
+//  qDebug() << circles.size();
+
+  if (0 == circles.size()) {
     return true;
   }
   return false;
 }
-

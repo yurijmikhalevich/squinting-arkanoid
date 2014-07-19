@@ -21,6 +21,7 @@
 #define ARKANOIDMANAGER_H
 
 #include <QObject>
+#include <QQueue>
 
 class ArkanoidManager : public QObject {
   Q_OBJECT
@@ -41,9 +42,7 @@ private:
   };
   void processNewState(const State &state);
   QObject *arkanoid;
-  State currentState;
-  State lastState;
-  int lastStateCount;
+  QQueue<State> lastStates;
 };
 
 #endif // ARKANOIDMANAGER_H

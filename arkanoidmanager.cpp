@@ -23,9 +23,6 @@
 ArkanoidManager::ArkanoidManager(QObject *arkanoid, QObject *parent)
     : QObject(parent) {
   this->arkanoid = arkanoid;
-  currentState = State::Undefined;
-  lastState = State::Undefined;
-  lastStateCount = 0;
 }
 
 void ArkanoidManager::leftEye() {
@@ -45,32 +42,52 @@ void ArkanoidManager::noEye() {
 }
 
 void ArkanoidManager::processNewState(const State &state) {
-  if (state == currentState) {
-    lastState = state;
-    return;
+  QString newDirection;
+  switch(state) {
+  case State::LeftEye:
+    newDirection = "left";
+    break;
+  case State::RightEye:
+    newDirection = "right";
+    break;
+  case State::BothEyes:
+  case State::NoEye:
+  default:
+    newDirection = "none";
+    break;
   }
-  if (state == lastState) {
-    lastStateCount += 1;
-    if (2 == lastStateCount) {
-      currentState = state;
-      QString newDirection;
-      switch (state) {
-      case State::LeftEye:
-        newDirection = "left";
-        break;
-      case State::RightEye:
-        newDirection = "right";
-        break;
-      case State::BothEyes:
-      case State::NoEye:
-      default:
-        newDirection = "none";
-        break;
-      }
-      arkanoid->setProperty("stickMovingDirection", newDirection);
-    }
-  } else {
-    lastStateCount = 1;
-  }
-  lastState = state;
+  arkanoid->setProperty("stickMovingDirection", newDirection);
+
+//  lastStates.enqueue(state);
+//  if (2 == lastStates.size()) {
+//    lastStates.dequeue();
+//  }
+//  int left = 0;
+//  int right = 0;
+//  int none = 0;
+//  for (State s : lastStates) {
+//      switch (s) {
+//      case State::LeftEye:
+//        left += 1;
+//        break;
+//      case State::RightEye:
+//        right += 1;
+//        break;
+//      case State::BothEyes:
+//        left += 1;
+//        right += 1;
+//        break;
+//      case State::NoEye:
+//      default:
+//        none += 1;
+//        break;
+//      }
+//  }
+//  QString newDirection = "none";
+//  if (left > right) {
+//    newDirection = "left";
+//  } else if (right > left) {
+//    newDirection = "right";
+//  }
+//  arkanoid->setProperty("stickMovingDirection", newDirection);
 }

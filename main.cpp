@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
                      &CameraCapturer::frame),
                    squintDetector, &SquintDetector::updateFrame);
 
-  capturer->startCapture(24);
+  capturer->startCapture(16);
 
   engine.load(QUrl(QStringLiteral("qrc:///main.qml")));
 
